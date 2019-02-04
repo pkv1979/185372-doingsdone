@@ -42,6 +42,23 @@ $tasks = [
         'done' => false
     ]
 ];
+
+// Функция для подсчета количества задач в проекте.
+// Входные параметры:
+//                      $arrayOfTasks - массив задач,
+//                      $project      - название проекта.
+// Возвращаемое значение: число задач в проекте.
+function getCountTasksInProject($arrayOfTasks, $project) {
+    $result = 0;
+
+    foreach ($arrayOfTasks as $key => $item) {
+        if ($item['category'] === $project) {
+            $result++;
+        }
+    }
+
+    return $result;
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -90,7 +107,7 @@ $tasks = [
                         <?php foreach($projects as $key => $item): ?>
                         <li class="main-navigation__list-item">
                             <a class="main-navigation__list-item-link" href="#"><?=$item;?></a>
-                            <span class="main-navigation__list-item-count">0</span>
+                            <span class="main-navigation__list-item-count"><?=getCountTasksInProject($tasks, $item);?></span>
                         </li>
                         <?php endforeach; ?>
                     </ul>
