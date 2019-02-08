@@ -7,7 +7,7 @@ $projects = ['Входящие', 'Учеба', 'Работа', 'Домашние
 $tasks = [
     [
         'taskName' => 'Собеседование в IT компании',
-        'dateOfComplection' => '01.12.2019',
+        'dateOfComplection' => '08.02.2019',
         'category' => 'Работа',
         'done' => false
     ],
@@ -31,34 +31,17 @@ $tasks = [
     ],
     [
         'taskName' => 'Купить корм для кота',
-        'dateOfComplection' => 'Нет',
+        'dateOfComplection' => '',
         'category' => 'Домашние дела',
         'done' => false
     ],
     [
         'taskName' => 'Заказать пиццу',
-        'dateOfComplection' => 'Нет',
+        'dateOfComplection' => '',
         'category' => 'Домашние дела',
         'done' => false
     ]
 ];
-
-// Функция для подсчета количества задач в проекте.
-// Входные параметры:
-//                      $arrayOfTasks - массив задач,
-//                      $project      - название проекта.
-// Возвращаемое значение: число задач в проекте.
-function getCountTasksInProject($arrayOfTasks, $project) {
-    $result = 0;
-
-    foreach ($arrayOfTasks as $key => $item) {
-        if ($item['category'] === $project) {
-            $result++;
-        }
-    }
-
-    return $result;
-}
 
 // Подключение файла functions.php
 require ('functions.php');
