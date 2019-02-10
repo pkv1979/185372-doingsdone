@@ -23,7 +23,13 @@
 <table class="tasks">
     <?php foreach ($tasks as $key => $item): ?>
         <?php if ($show_complete_tasks === 1 or !$item['done']): ?>
-            <tr class="tasks__item task <?=$item['done']? 'task--completed' : '' ?>">
+            <tr class="tasks__item task 
+                <?php if ($item['done']) {
+                  print('task--completed');  
+                } else if (isDeadlineNow(strip_tags($item['dateOfComplection']))) { 
+                    print('task--important');
+                } 
+                ?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
                         <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?=$key; ?>" <?=strip_tags($item['done'])? 'checked' : '' ?>>
