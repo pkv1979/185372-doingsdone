@@ -1,4 +1,7 @@
 <?php
+
+date_default_timezone_set('Europe/Kiev');
+
 function include_template($name, $data) {
 	$name = 'templates/' . $name;
 	$result = '';
@@ -36,21 +39,10 @@ function getCountTasksInProject($arrayOfTasks, $project) {
 // Функция проверяет сколько часов осталось до выполнения задачи.
 // Если осталось меньше 24 часов, то возвращает true, если больше или нет даты, то false.
 function isDeadlineNow($taskDate) {
-	$result = false;
-
 	if ($taskDate === '') {
-		return $result;
+		return false;
 	}
+	$hourToEnd = floor((strtotime($taskDate) - time()) / 3600);
 
-	$tsTask = strtotime($taskDate);
-
-	$secToEnd = $tsTask - time();
-
-	$hourToEnd = floor($secToEnd / 3600);
-
-	if ($hourToEnd <= 24) {
-		$result = true;
-	}
-
-	return $result;
+	return $hourToEnd <= 24 ? true : false;
 }
