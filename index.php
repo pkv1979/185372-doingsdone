@@ -5,8 +5,7 @@ $show_complete_tasks = rand(0, 1);
 $projects = [];
 // Массив задач
 $tasks = [];
-$current_user = 'Vasyl Pupkin';
-$user_id = 0;
+$user = [];
 
 // Подключение файла functions.php
 require ('functions.php');
@@ -17,16 +16,19 @@ if (!$conn) {
     print('Ошибка: Невозможно подключиться к базе данных ' . mysqli_connect_error());
 }
 else {
-    $sql = "select id from user where name = '" . $current_user . "'";
+    $id = mysqli_real_escape_string($conn, $_GET['id']);
+    $sql = "select name from user where id=%s";
+    $sql = sprintf($sql, $_GET['id']);
     $result = mysqli_query($conn, $sql);
     if (!$result) {
         print('Ошибка: Невозможно получить данные из таблицы ' . mysqli_connect_error());
     }
     else {
-        $user_id = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $user = mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
 
-    $sql = "select name from project where user_id = " . $user_id['id'];
+    $sql = "select name from project where user_id=%s";
+    $sql = sprintf($sql, $id);
     $result = mysqli_query($conn, $sql);
     if (!$result) {
         print('Ошибка: Невозможно получить данные из таблицы ' . mysqli_connect_error());
@@ -35,7 +37,8 @@ else {
         $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
 
-    $sql = "select * from task where user_id = " . $user_id['id'];
+    $sql = "select * from task where user_id=%s";
+    $sql = sprintf($sql, $id);
     $result = mysqli_query($conn, $sql);
     if (!$result) {
         print('Ошибка: Невозможно получить данные из таблицы ' . mysqli_connect_error());
@@ -48,6 +51,6 @@ else {
 // HTML код главной страницы
 $main_content = include_template('index.php', ['show_complete_tasks' => $show_complete_tasks, 'tasks' => $tasks]);
 // Итоговый HTML код
-$layout_source = include_template('layout.php', ['title' => 'Дела в порядке', 'projects' => $projects, 'tasks' => $tasks, 'content' => $main_content]);
+$layout_source = include_template('layout.php', ['title' => 'Дела в порядке', 'user_name' => $user[0]['name'], 'projects' => $projects, 'tasks' => $tasks, 'content' => $main_content]);
 // Вывод резульата на экран
 print($layout_source);
