@@ -22,22 +22,22 @@
 
 <table class="tasks">
     <?php foreach ($tasks as $key => $item): ?>
-        <?php if ($show_complete_tasks === 1 or !$item['done']): ?>
+        <?php if ($show_complete_tasks === 1 or !$item['task_status']): ?>
             <tr class="tasks__item task 
-                <?php if ($item['done']) {
+                <?php if ($item['task_status']) {
                   print('task--completed');  
-                } else if (isDeadlineNow(strip_tags($item['dateOfComplection']))) { 
+                } else if (isDeadlineNow(strip_tags($item['term_date']))) { 
                     print('task--important');
                 } 
                 ?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
-                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?=$key; ?>" <?=strip_tags($item['done'])? 'checked' : '' ?>>
-                        <span class="checkbox__text"><?=strip_tags($item['taskName']);?></span>
+                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?=$key; ?>" <?=strip_tags($item['task_status'])? 'checked' : '' ?>>
+                        <span class="checkbox__text"><?=strip_tags($item['name']);?></span>
                     </label>
                 </td>
 
-                <td class="task__date"><?=strip_tags($item['dateOfComplection']);?></td>
+                <td class="task__date"><?=strip_tags($item['term_date']);?></td>
             </tr>
         <?php endif; ?>
     <?php endforeach; ?>

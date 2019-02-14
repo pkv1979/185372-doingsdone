@@ -44,8 +44,8 @@
                     <ul class="main-navigation__list">
                         <?php foreach($projects as $key => $item): ?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?=strip_tags($item);?></a>
-                            <span class="main-navigation__list-item-count"><?=getCountTasksInProject($tasks, strip_tags($item));?></span>
+                            <a class="main-navigation__list-item-link" href="#"><?=strip_tags($item['name']);?></a>
+                            <span class="main-navigation__list-item-count"><?=getCountTasksInProject($tasks, strip_tags($item['name']));?></span>
                         </li>
                         <?php endforeach; ?>
                     </ul>

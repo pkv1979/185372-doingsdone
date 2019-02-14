@@ -2,49 +2,48 @@
 // показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
 // Массив проектов
-$projects = ['Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
+$projects = [];
 // Массив задач
-$tasks = [
-    [
-        'taskName' => 'Собеседование в IT компании',
-        'dateOfComplection' => '08.02.2019',
-        'category' => 'Работа',
-        'done' => false
-    ],
-    [
-        'taskName' => 'Выполнить тестовое задание',
-        'dateOfComplection' => '25.12.2019',
-        'category' => 'Работа',
-        'done' => false
-    ],
-    [
-        'taskName' => 'Сделать задание первого раздела',
-        'dateOfComplection' => '21.12.2019',
-        'category' => 'Учеба',
-        'done' => true
-    ],
-    [
-        'taskName' => 'Встреча с другом',
-        'dateOfComplection' => '21.12.2019',
-        'category' => 'Входящие',
-        'done' => false
-    ],
-    [
-        'taskName' => 'Купить корм для кота',
-        'dateOfComplection' => '',
-        'category' => 'Домашние дела',
-        'done' => false
-    ],
-    [
-        'taskName' => 'Заказать пиццу',
-        'dateOfComplection' => '',
-        'category' => 'Домашние дела',
-        'done' => false
-    ]
-];
+$tasks = [];
+$current_user = 'Vasyl Pupkin';
+$user_id = 0;
 
 // Подключение файла functions.php
 require ('functions.php');
+
+$conn = mysqli_connect('localhost', 'root', '', 'doinsdone');
+
+if (!$conn) {
+    print('Ошибка: Невозможно подключиться к базе данных ' . mysqli_connect_error());
+}
+else {
+    $sql = "select id from user where name = '" . $current_user . "'";
+    $result = mysqli_query($conn, $sql);
+    if (!$result) {
+        print('Ошибка: Невозможно получить данные из таблицы ' . mysqli_connect_error());
+    }
+    else {
+        $user_id = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+
+    $sql = "select name from project where user_id = " . $user_id['id'];
+    $result = mysqli_query($conn, $sql);
+    if (!$result) {
+        print('Ошибка: Невозможно получить данные из таблицы ' . mysqli_connect_error());
+    }
+    else {
+        $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+
+    $sql = "select * from task where user_id = " . $user_id['id'];
+    $result = mysqli_query($conn, $sql);
+    if (!$result) {
+        print('Ошибка: Невозможно получить данные из таблицы ' . mysqli_connect_error());
+    }
+    else {
+        $tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+}
 
 // HTML код главной страницы
 $main_content = include_template('index.php', ['show_complete_tasks' => $show_complete_tasks, 'tasks' => $tasks]);
