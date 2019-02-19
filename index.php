@@ -5,7 +5,7 @@ $show_complete_tasks = rand(0, 1);
 $projects = [];
 // Массив задач
 $tasks = [];
-$user = '';
+$user = [];
 
 // Подключение файла functions.php
 require_once('functions.php');
@@ -19,9 +19,7 @@ if (!$conn) {
 
 mysqli_set_charset($conn, "utf8");
 $stmt = mysqli_stmt_init($conn);
-$id = mysqli_real_escape_string($conn, $_GET['id']);
-settype($id, 'integer');
-
+$id = (int)mysqli_real_escape_string($conn, $_GET['id']);
 
 // Получение имени пользователя
 $sql = 'select name from user where id=?';
@@ -31,7 +29,7 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
     mysqli_stmt_bind_result($stmt, $user);
     mysqli_stmt_fetch($stmt);
 
-    if (is_null($user)) {
+    if ($user === null) {
         print('Ошибка: Пользователь не найден.');
         exit();
     }
