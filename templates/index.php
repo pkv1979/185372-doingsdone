@@ -26,18 +26,18 @@
             <tr class="tasks__item task 
                 <?php if ($item['task_status']) {
                   print('task--completed');  
-                } else if (isDeadlineNow(strip_tags($item['term_date']))) { 
+                } else if (isDeadlineNow($item['term_date'])) { 
                     print('task--important');
                 } 
                 ?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
-                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?=$key; ?>" <?=strip_tags($item['task_status'])? 'checked' : '' ?>>
-                        <span class="checkbox__text"><?=strip_tags($item['name']);?></span>
+                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?=$key; ?>" <?=$item['task_status']? 'checked' : '' ?>>
+                        <span class="checkbox__text"><?=$item['name'];?></span>
                     </label>
                 </td>
 
-                <td class="task__date"><?=strip_tags($item['term_date']);?></td>
+                <td class="task__date"><?=$item['term_date'] == '' ? '' : date("d.m.Y", strtotime($item['term_date']));?></td>
             </tr>
         <?php endif; ?>
     <?php endforeach; ?>
