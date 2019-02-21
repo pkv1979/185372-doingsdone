@@ -19,7 +19,12 @@ if (!$conn) {
 
 mysqli_set_charset($conn, "utf8");
 $stmt = mysqli_stmt_init($conn);
-$id = (int)mysqli_real_escape_string($conn, $_GET['user_id']);
+if (isset($_GET['user_id'])) {
+    $id = (int)mysqli_real_escape_string($conn, $_GET['user_id']);    
+}
+else {
+    $id = 1;
+}
 
 // Получение имени пользователя
 $sql = 'select name from user where id=?';
@@ -36,7 +41,7 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
 }
 
 // Получение списка проектов пользователя
-$sql = 'select any_value(p.id) as id, p.name, count(t.name) as count from project p left join task t on p.id = t.project_id where p.user_id=? group by p.name';
+$sql = 'select p.id, p.name, count(t.name) as count from project p left join task t on p.id = t.project_id where p.user_id=? group by p.id';
 if (mysqli_stmt_prepare($stmt, $sql)) {
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
