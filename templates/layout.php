@@ -44,7 +44,7 @@
                     <ul class="main-navigation__list">
                         <?php foreach($projects as $key => $item): ?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?=$item['name'];?></a>
+                            <a class="main-navigation__list-item-link" href="/index.php?project_id=<?=$item['id'];?>&user_id=1"><?=$item['name'];?></a>
                             <span class="main-navigation__list-item-count"><?=$item['count'];?></span>
                         </li>
                         <?php endforeach; ?>
