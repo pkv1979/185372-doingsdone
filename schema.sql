@@ -6,7 +6,7 @@ create table user (
 	id int not null auto_increment,
 	email varchar(100) not null,
 	name varchar(50) not null,
-	password varchar(50) not null,
+	password varchar(255) not null,
 	primary key(id),
 	index uName (name),
 	unique index email (email)	
