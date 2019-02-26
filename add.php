@@ -1,81 +1,65 @@
-<?php
+<h2 class="content__main-heading">Добавление задачи</h2>
 
-// Подключение файла functions.php
-require_once 'functions.php';
-require_once 'mysql_helper.php';
+<form class="form"  action="add.php" method="post" enctype="multipart/form-data">
+  <div class="form__row">
+    <label class="form__label" for="name">Название <sup>*</sup></label>
 
-$conn = connectDb();
-$user = getUser($conn);
-$projects = getUserProjects($conn, $user['id']);
+    <input class="form__input <?=isset($errors['name']) ? 'form__input--error' : ''; ?>" type="text" name="name" id="name" value="<?=isset($task['name']) ? $task['name'] : ''; ?>" placeholder="Введите название">
+    <?php if(isset($errors['name'])): ?>
+      <p class="form__message">
+        <?=$errors['name'];?>
+      </p>
+    <?php endif;?>
+  </div>
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$task = $_POST;
+  <div class="form__row">
+    <label class="form__label" for="project">Проект</label>
 
-	$required = ['name'];
-	$dict = ['name' => 'Название', 'date' => 'Дата выполнения', 'project' => 'Проект'];
-	$errors = [];
+    <select class="form__input form__input--select <?=isset($errors['project']) ? 'form__input--error' : ''; ?>" name="project_" id="project">
+      <option value="0">Выберите проект</option>
+      <?php foreach($projects as $key => $item): ?>
+        <option value="<?=$item['id'];?>"
+          <?php if(isset($task['project_'])) {
+            if ($item['id'] === (int)$task['project_']) {
+              print('selected');
+            }
+          } 
+          ?>>
+            <?=$item['name'];?>
+         </option>
+      <?php endforeach; ?>
+    </select>
+    <?php if (isset($errors['project'])): ?>
+      <p class="form__message">
+        <?=$errors['project'];?>
+      </p>
+    <?php endif; ?>
+  </div>
 
-	// Проверка обязательных полей
-	foreach ($required as $key) {
-		if (empty($_POST[$key])) {
-			$errors[$key] = 'Это поле надо заполнить';
-		}
-	}
+  <div class="form__row">
+    <label class="form__label" for="date">Дата выполнения</label>
 
-	// Проверка на существование проекта
-	$success = false;
-	foreach ($projects as $key => $item) {
-		if ($item['id'] == $_POST['project_']) {
-			$success = true;
-			break;
-		}
-	}
-	if (!$success) {
-		$errors['project'] = 'Выберите существующий проект';
-	}
+    <input class="form__input form__input--date <?=isset($errors['date']) ? 'form__input--error' : '';?>" type="date" name="date" id="date" value="<?=isset($task['date']) ? $task['date'] : ''; ?>" placeholder="Введите дату в формате ДД.ММ.ГГГГ">
+    <?php if (isset($errors['date'])): ?>
+      <p class="form__message">
+        <?=$errors['date'];?>
+      </p>
+    <?php endif; ?>
+  </div>
 
-	// Проверка даты
-	if (isset($_POST['date'])) {
-		if((strtotime($_POST['date']) - strtotime(date('d.m.Y 00:00:00'))) < 0) {
-			$errors['date'] = 'Введите дату не позднее сегодняшней';
-		}
-	}
+  <div class="form__row">
+    <label class="form__label" for="preview">Файл</label>
 
-	// Загрузка файла
-	$filePath = '';
-	if (isset($_FILES['preview']['name'])) {
-		$tmp = $_FILES['preview']['tmp_name'];
-		$filePath =  $_FILES['preview']['name'];
-		move_uploaded_file($tmp, $filePath);
-	}
+    <div class="form__input-file">
+      <input class="visually-hidden" type="file" name="preview" id="preview" value="">
 
-	if (count($errors) > 0) {
-		$main_content = include_template('add.php', ['projects' => $projects, 'task' => $task, 'errors' => $errors, 'dict' => $dict]);
-	}
-	else {
-		$stmt = mysqli_stmt_init($conn);
-		if (empty($_POST['date'])) {
-			$sql = 'insert into task set user_id = ?, project_id = ?, name = ?, file_url = ?';
-			$stmt = db_get_prepare_stmt($conn, $sql, [$user['id'], $_POST['project_'], $_POST['name'], $filePath]);
-		}
-		else {
-			$sql = 'insert into task set user_id = ?, project_id = ?, name = ?, file_url = ?, term_date = ?';
-			$stmt = db_get_prepare_stmt($conn, $sql, [$user['id'], $_POST['project_'], $_POST['name'], $filePath, $_POST['date']]);
-		}
-		$result = mysqli_stmt_execute($stmt);
-		if ($result) {
-			header('Location: /');
-		}
-	}
-}
-else {
-	$main_content = include_template('add.php', ['projects' => $projects]);
-}
+      <label class="button button--transparent" for="preview">
+        <span>Выберите файл</span>
+      </label>
+    </div>
+  </div>
 
-//mysqli_stmt_close($stmt);
-mysqli_close($conn);
-
-// Итоговый HTML код
-$layout_source = include_template('layout.php', ['title' => 'Дела в порядке', 'user_name' => $user['name'], 'projects' => $projects, 'content' => $main_content]);
-// Вывод резульата на экран
-print($layout_source);
+  <div class="form__row form__row--controls">
+    <input class="button" type="submit" name="" value="Добавить">
+  </div>
+</form>
