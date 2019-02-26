@@ -37,6 +37,14 @@
                     </label>
                 </td>
 
+                <?php if(isset($item['file_url'])): ?>
+                    <td class="task__file">
+                        <a class="download-link" href="<?=$item['file_url'];?>"><?=$item['file_url'];?></a>
+                    </td>
+                <?php else: ?>
+                    <td></td>
+                <?php endif; ?>
+
                 <td class="task__date"><?=$item['term_date'] == '' ? '' : date("d.m.Y", strtotime($item['term_date']));?></td>
             </tr>
         <?php endif; ?>
