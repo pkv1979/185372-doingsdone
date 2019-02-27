@@ -14,30 +14,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$data = [$user['id']];
 
 	// Проверка поля название
-	$name = mysqli_real_escape_string($conn, $task['name']);
+	$name = mysqli_real_escape_string($conn, trim($task['name']));
 	if (empty($name)) {
 		$errors['name'] = 'Это поле должно быть заполнено';
 	}
 	else {
 		$sql = $sql . ', name = ?';
-		array_push($data, $name);
+		$data[] = $name;
 	}
 
 	// Проверка на существование проекта
 	$success = false;
 	$project = (int)mysqli_real_escape_string($conn, $task['project_']);
-	foreach ($projects as $key => $item) {
-		if ($item['id'] === $project) {
-			$success = true;
-			$sql = $sql . ', project_id = ?';
-			array_push($data, $project);
-			break;
-		}
-	}
-	if (!$success) {
+	$sql = 'select * from user where id = ?';
+	$stmt = db_get_prepare_stmt($conn, $sql, [$project]);
+	mysqli_stmt_execute($stmt);
+	$result = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+	if (!$result) {
 		$errors['project'] = 'Выберите существующий проект';
 	}
-
+	else {
+		$sql = $sql . ', project_id = ?';
+		$data[] = $project;
+	}
+	
 	// Проверка даты
 	$date = mysqli_real_escape_string($conn, $task['date']);
 	if (isset($date)) {
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 		else {
 			$sql = $sql . ', term_date = ?';
-			array_push($data, $date);
+			$data[] =  $date;
 		}
 	}
 
@@ -54,10 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (isset($_FILES['preview']['name'])) {
 		$tmp = $_FILES['preview']['tmp_name'];
 		$filePath =  $_FILES['preview']['name'];
-		move_uploaded_file($tmp, $filePath);
-		if ($filePath !== '') {
+		if (move_uploaded_file($tmp, $filePath)) {
 			$sql = $sql . ', file_url = ?';
-			array_push($data, $filePath);
+			$data[] = $filePath;
+		}
+		else {
+			$errors['file'] = 'Ошибка загрузки файла';
 		}
 	}
 

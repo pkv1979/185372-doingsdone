@@ -11,13 +11,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$errors = [];
 
 	// Проверка поля Имя
-	$name = mysqli_real_escape_string($conn, $form['name']);
+	$name = mysqli_real_escape_string($conn, trim($form['name']));
 	if (empty($name)) {
 		$errors['name'] = 'Это поле должно быть заполнено';
 	}
 
 	// Проверка на валидность e-mail
-	$email = mysqli_real_escape_string($conn, $form['email']);
+	$email = mysqli_real_escape_string($conn, trim($form['email']));
 	if (empty($email)) {
 		$errors['email'] = 'Это поле должно быть заполнено';
 	}
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 
 	// Проверка поля пароль
-	$password = mysqli_real_escape_string($conn, $form['password']);
+	$password = mysqli_real_escape_string($conn, trim($form['password']));
 	if (empty($password)) {
 		$errors['password'] = 'Это поле должно быть заполнено';
 	}
