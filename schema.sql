@@ -4,6 +4,7 @@ use doinsdone;
 
 create table user (
 	id int not null auto_increment,
+	created_date timestamp not null default current_timestamp,
 	email varchar(100) not null,
 	name varchar(50) not null,
 	password varchar(255) not null,
