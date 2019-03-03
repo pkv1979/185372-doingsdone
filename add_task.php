@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 
 	if (count($errors) > 0) {
-		$main_content = include_template('add.php', ['projects' => $projects, 'task' => $task, 'errors' => $errors]);
+		$main_content = include_template('add_task.php', ['projects' => $projects, 'task' => $task, 'errors' => $errors]);
 	}
 	else {
 		$stmt = mysqli_stmt_init($conn);
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 }
 else {
-	$main_content = include_template('add.php', ['projects' => $projects]);
+	$main_content = include_template('add_task.php', ['projects' => $projects]);
 }
 
 mysqli_close($conn);
